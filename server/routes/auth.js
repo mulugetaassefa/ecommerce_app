@@ -1,10 +1,11 @@
 const express =require("express")
-const User = require('../models/users')
+const User = require('../models/user')
 const bcryptjs =require("bcryptjs")
 const authRouter =express.Router();
  const jwt = require('jsonwebtoken');
+const auth=require("../middlewares/auth");
 
-
+// signup
 authRouter.post("/api/signup", async (req, res) => {
     const {name, email , password} =req.body;
     try { 
@@ -23,9 +24,7 @@ authRouter.post("/api/signup", async (req, res) => {
    res.json(user);
 } catch(e) { 
     res.status(500).json({error:e.msg});
-    //get data from user
-    // post that in database
-    //return that data to the user
+
 }
 });
 //get all user
@@ -41,7 +40,7 @@ authRouter.get("/api/signup", async (req,res) => {
         res.status(500).json({error:e.msg})
     }
 })
-
+// signin In Route
 authRouter.post("/api/signin", async (req,res) =>{
     try {
        const { email, password } =req.body;
@@ -51,7 +50,7 @@ authRouter.post("/api/signin", async (req,res) =>{
             return res.status(400)
             .json({msg:"user with this email does not exist!"});
            }
-      const isMatch=await bcryptjs.compare(password,user.password);
+      const isMatch=await bcryptjs.compare(password, user.password);
        if(!isMatch) {
         return res.status(400).json({msg:"Incorrect password"});
        }
@@ -62,5 +61,30 @@ authRouter.post("/api/signin", async (req,res) =>{
     }
 })
 
+authRouter.post("/tokenIsValid", async (req, res) => {
+    try {
+         const token=req.header("x-auth-token");
+         if(!token) return res.json(false);
+         const verified =jwt.verify(token, "passwordKey");
+         if(!verified) return res.json(false);
+
+
+         const user =await User.findById(verified.id);
+         if(!user) return res.json(false);
+      res.json(true);
+
+    } catch (e) {
+        res.status(500).json({error : e.message}) 
+    }
+});
+
+// get user data
+
+authRouter.get("/", auth, async (req, res) => {
+    const user=await User.findById(req.user);
+    res.json({...user._doc, token: req.token});
+}); 
 
 module.exports =authRouter;
+
+
