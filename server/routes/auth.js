@@ -4,6 +4,7 @@ const bcryptjs =require("bcryptjs")
 const authRouter =express.Router();
  const jwt = require('jsonwebtoken');
 const auth=require("../middlewares/auth");
+const { error } = require("console");
 
 // signup
 authRouter.post("/api/signup", async (req, res) => {
@@ -11,7 +12,7 @@ authRouter.post("/api/signup", async (req, res) => {
     try { 
     const existigUser =await User.findOne({email});
     if(existigUser) {
-        return res.status(400).json({msg:"User with same email exist"})
+        return res.status(400).json({msg:"User already  exist with same email "})
     }
     const hashedPassword = await bcryptjs.hash(password, 8);
     let user = new User ({  
@@ -19,11 +20,13 @@ authRouter.post("/api/signup", async (req, res) => {
         password : hashedPassword,
         name
     });
+
    user =await user.save();
 
    res.json(user);
-} catch(e) { 
-    res.status(500).json({error:e.msg});
+} catch(error) { 
+    console.log(error);
+    res.status(500).json({error:error.msg});
 
 }
 });
@@ -41,14 +44,14 @@ authRouter.get("/api/signup", async (req,res) => {
     }
 })
 // signin In Route
-authRouter.post("/api/signin", async (req,res) =>{
+authRouter.post("/api/login", async (req,res) =>{
     try {
        const { email, password } =req.body;
        const user=await User.findOne({email})
 
            if(!user){
             return res.status(400)
-            .json({msg:"user with this email does not exist!"});
+            .json({msg:"user with this email not created !"});
            }
       const isMatch=await bcryptjs.compare(password, user.password);
        if(!isMatch) {

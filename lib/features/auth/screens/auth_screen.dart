@@ -34,21 +34,20 @@ class _AuthScreenState extends State<AuthScreen> {
     _passwordController.dispose();
     _nameController.dispose();
   }
-   AuthService myobject=AuthService();
+  
 
  void signUpUser() {
      
-     myobject.signUpUser(  
+      AuthService().signUpUser(  
      context:context, 
      name: _nameController.text,
      email:_emailController.text,
     password: _passwordController.text,
     );
  }
- AuthService  signObject =AuthService();
  void signInUser() {
      
-      signObject.signInUser(   
+      AuthService().signInUser(   
     context:context,
     email:_emailController.text,
     password: _passwordController.text,
@@ -60,7 +59,8 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: GlobalVariables.greyBackgroundCOlor,
-      body: SafeArea(
+      body: SingleChildScrollView( 
+     child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -105,16 +105,21 @@ class _AuthScreenState extends State<AuthScreen> {
                         CustomTextField(
                           controller: _nameController,
                           hintText: 'Name',
+                           
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(
+
                           controller: _emailController,
                           hintText: 'Email',
+                          
+                          
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(
                           controller: _passwordController,
                           hintText: 'Password',
+                    
                         ),
                         const SizedBox(height: 10),
                       
@@ -143,7 +148,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   'Sign-In.',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                  ),
+                  )
                 ),
                 leading: Radio(
                   activeColor: GlobalVariables.secondaryColor,
@@ -190,6 +195,7 @@ class _AuthScreenState extends State<AuthScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

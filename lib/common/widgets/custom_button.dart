@@ -35,7 +35,7 @@ class CustomButton extends StatelessWidget {
       ),
     ),
     child: Text(
-      text,
+      text, style: const TextStyle(color: Colors.amberAccent),
     ),
   );
 }

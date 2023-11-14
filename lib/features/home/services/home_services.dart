@@ -22,7 +22,7 @@ class HomeServices {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-auth-token': userProvider.user.token,
       });
-
+      if(context.mounted) { 
       httpErrorHandle(
         response: res,
         context: context,
@@ -38,8 +38,11 @@ class HomeServices {
           }
         },
       );
+      }
     } catch (e) {
+      if(context.mounted) { 
       showSnackBar(context, e.toString());
+      }
     }
     return productList;
   }
@@ -63,7 +66,7 @@ class HomeServices {
         'Content-Type': 'application/json; charset=UTF-8',
         'x-auth-token': userProvider.user.token,
       });
-
+     if(context.mounted) { 
       httpErrorHandle(
         response: res,
         context: context,
@@ -71,8 +74,11 @@ class HomeServices {
           product = Product.fromJson(res.body);
         },
       );
+     }
     } catch (e) {
+      if(context.mounted) { 
       showSnackBar(context, e.toString());
+      }
     }
     return product;
   }

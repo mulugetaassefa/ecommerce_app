@@ -1,4 +1,5 @@
 import 'dart:convert';
+//import 'dart:html';
 import 'package:ecommerce/common/widgets/buttom_bar.dart';
 import 'package:ecommerce/constants/error_handling.dart';
 import 'package:ecommerce/constants/global_variables.dart';
@@ -29,14 +30,21 @@ class AuthService {
         token: '',
         cart: [],
       );
+       final Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    final Map<String, String> body = {
+        'name':user.name,
+        'email': user.email,
+         'password': user.password,
+    };
+     final jsonBody = jsonEncode(body);
 
-      http.Response res = await http.post(
-        Uri.parse('$uri/api/signup'),
-        body: user.toJson(),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      http.Response  res = await http.post(
+        Uri.parse(register),
+         headers:headers,
+        body:jsonBody);
+
   if(context.mounted) {
       httpErrorHandle(
         response: res,
@@ -63,16 +71,22 @@ class AuthService {
     required String password,
   }) async {
     try {
-      http.Response res = await http.post(
-        Uri.parse('$uri/api/signin'),
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+  
+     final Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8'
+     };
+
+      final Map<String, String> body = {
+        'email':email,
+         'password':password,
+    };
+
+     final jsonBody = jsonEncode(body);
+        http.Response  res = await http.post(
+        Uri.parse(login),
+         headers:headers,
+        body: jsonBody);
+
       if(context.mounted) { 
       httpErrorHandle(
         response: res,
@@ -83,15 +97,16 @@ class AuthService {
           Provider.of<UserProvider>(context, listen: false).setUser(res.body);
           }
           await prefs.setString('x-auth-token', jsonDecode(res.body)['token']);
-          if(context.mounted) { 
-          Navigator.pushNamedAndRemoveUntil(
+         if (context.mounted) {
+              Navigator.pushNamedAndRemoveUntil(
             context,
             BottomBar.routeName,
             (route) => false,
-          );
-        }
+           );
+       }
         }
       );
+
       }
     } catch (e) {
       if(context.mounted) { 

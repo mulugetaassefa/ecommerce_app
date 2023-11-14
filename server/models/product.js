@@ -15,7 +15,7 @@ const productSchema = mongoose.Schema({
   images: [
     {
       type: String,
-      //required: true,
+      required: true,
     },
   ],
   quantity: {
