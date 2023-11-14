@@ -5,7 +5,7 @@ import 'package:ecommerce/features/home/widgets/deal_of_day.dart';
 import 'package:ecommerce/features/home/widgets/top_categories.dart';
 import 'package:ecommerce/features/search/screens/search_screen.dart';
 import 'package:flutter/material.dart';
-
+//home screen
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
   const HomeScreen({Key? key}) : super(key: key);
